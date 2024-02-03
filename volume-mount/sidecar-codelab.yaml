@@ -1,0 +1,29 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: sidecar-codelab1
+  annotations:
+  labels:
+    cloud.googleapis.com/location: "us-central1"
+spec:
+  template:
+    spec:
+      containers:
+      - image: "us-central1-docker.pkg.dev/cloudrun-413119/sidecar-codelab/ingress:latest"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: /my-volume-mount
+          name: in-memory-1
+      - image: "us-central1-docker.pkg.dev/cloudrun-413119/sidecar-codelab/sidecar:latest"
+        env:
+        - name: PORT
+          value: "5000"
+        volumeMounts:
+        - mountPath: /my-volume-mount
+          name: in-memory-1
+      volumes:
+      - name: in-memory-1
+        emptyDir:
+          medium: Memory
+
